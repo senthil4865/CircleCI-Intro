@@ -1,27 +1,53 @@
 version: 2.1
 jobs:
-  build:
+  build-frontend:
     docker:
       - image: circleci/node:7.10
     
     working_directory: ~/repo
 
     steps:
-      - run: echo build step
+      - run: echo build-frontend step
   
-  test:
+  build-backend:
+    docker:
+      - image: circleci/node:7.10
+    
+    working_directory: ~/repo
+
+    steps:
+      - run: echo build-backend step
+ 
+  test-frontend:
+    docker:
+      - image: circleci/node:7.10
+    
+    working_directory: ~/repo
+
+    steps:
+      - run: echo test-frontend step
+
+  test-backend:
+    docker:
+      - image: circleci/node:7.10
+    
+    working_directory: ~/repo
+
+    steps:
+      - run: echo test-backend step
+
+  integration-tests:
     docker:
       - image: circleci/node:7.10
 
     working_directory: ~/repo
 
     steps:
-      - run: echo test step  
+      - run: echo integration-tests step  
   
   deploy:
     docker:
       - image: circleci/node:7.10
-
     working_directory: ~/repo
 
     steps:
@@ -31,10 +57,20 @@ workflows:
   version: 2.1
   build-and-test:
     jobs:
-      - build
-      - test:
+      - build-frontend
+      - build-backend
+      - test-frontend:
           requires:
-            - build
+            - build-frontend
+      - test-backend:
+          requires:
+            - build-backend   
+      - integration-tests:
+          requires:
+            - build-backend
+            - build-frontend         
       - deploy:
           requires:
-            - test
+            - test-frontend
+            - test-backend
+            - integration-tests
