@@ -26,7 +26,18 @@ jobs:
       - attach_workspace:
           at: ~/repo/workspace
       - run: ls ~/repo/workspace/compiled_output.txt
-             
+
+  perf-testing:
+    docker:
+      - image: circleci/node:7.10
+
+    working_directory: ~/repo
+
+    steps:
+      - run: echo perf testing
+      - attach_workspace:
+          at: ~/repo/workspace
+      - run: ls ~/repo/workspace/compiled_output.txt           
   
   deploy:
     docker:
